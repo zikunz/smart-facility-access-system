@@ -2,7 +2,7 @@
 
 ## Application Overview
 1. When the program starts, it displays a message on the console window with a header and usage instructions.
-2. The program polls SW3 and SW2 on the CC3200 LaunchPad. When SW3 is pressed, a binary counting sequence on the LEDs starts. It will count from 000 to 111 continuously (after 111, it will restart from 000 unless SW2 is pressed). A message to the console "SW3 pressed" will also be shown. This message will not be printed again regardless of how many times the user keeps on pressing SW3 unless after SW2 has been pressed.
+2. The program polls SW3 and SW2 on the CC3200 LaunchPad. When SW3 is pressed, a binary counting sequence on the LEDs starts. It will count from 000 to 111 continuously (after 111, it will restart from 000 unless SW2 is pressed). A message to the console "SW3 is pressed" will also be shown. This message will not be printed again regardless of how many times the user keeps on pressing SW3 unless after SW2 is pressed.
 * 000 means green LED is OFF, orange LED is OFF, red LED is OFF
 * 001 means green LED is OFF, orange LED is OFF, red LED is ON
 * 010 means green LED is OFF, orange LED is ON, red LED is OFF
