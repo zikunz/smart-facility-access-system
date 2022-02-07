@@ -887,8 +887,7 @@ void main()
     if (lRetVal < 0)
     {
         UART_PRINT("Unable to set time in the device");
-        LOOP_FOREVER()
-        ;
+        LOOP_FOREVER();
     }
 
     while (1)
