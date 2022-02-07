@@ -1,3 +1,7 @@
+// Application Name: Lab 2
+// Student: Zikun Zhu
+//
+//*****************************************************************************
 #include <stdio.h>
 
 // Simplelink includes
