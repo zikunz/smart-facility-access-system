@@ -127,34 +127,34 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXE_OUTPUTS += \
-lab2.out \
+SSL_REST_API_AWS_W19.out \
 
 EXE_OUTPUTS__QUOTED += \
-"lab2.out" \
+"SSL_REST_API_AWS_W19.out" \
 
 BIN_OUTPUTS += \
-lab2.bin \
+SSL_REST_API_AWS_W19.bin \
 
 BIN_OUTPUTS__QUOTED += \
-"lab2.bin" \
+"SSL_REST_API_AWS_W19.bin" \
 
 
 # All Target
-all: lab2.out
+all: SSL_REST_API_AWS_W19.out
 
 # Tool invocations
-lab2.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+SSL_REST_API_AWS_W19.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: ARM Linker'
-	"C:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=vfplib -me -Ooff --define=ccs --define=cc3200 -g --gcc --printf_support=full --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi -z -m"lab2.map" --heap_size=0x00008000 --stack_size=0x00001000 -i"C:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/lib" -i"C:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="lab2_linkInfo.xml" --rom_model -o "lab2.out" $(ORDERED_OBJS)
+	"C:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=vfplib -me -Ooff --define=ccs --define=cc3200 -g --gcc --printf_support=full --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi -z -m"SSL_REST_API_AWS_W19.map" --heap_size=0x00008000 --stack_size=0x00001000 -i"C:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/lib" -i"C:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="SSL_REST_API_AWS_W19_linkInfo.xml" --rom_model -o "SSL_REST_API_AWS_W19.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 	@$(MAKE) --no-print-directory post-build
 
-lab2.bin: $(EXE_OUTPUTS)
+SSL_REST_API_AWS_W19.bin: $(EXE_OUTPUTS)
 	@echo 'Building files: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo 'Invoking: ARM Hex Utility'
-	"C:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/bin/armhex"  -o "lab2.bin" $(EXE_OUTPUTS__QUOTED)
+	"C:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/bin/armhex"  -o "SSL_REST_API_AWS_W19.bin" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo ' '
 	@$(MAKE) --no-print-directory post-build
@@ -169,7 +169,7 @@ clean:
 
 post-build:
 	-@echo 'Bin Generation'
-	-"C:/ti/ccs930/ccs/utils/tiobj2bin/tiobj2bin" "lab2.out" "lab2.bin" "C:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/bin/armofd" "C:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/bin/armhex" "C:/ti/ccs930/ccs/utils/tiobj2bin/mkhex4bin"
+	-"C:/ti/ccs930/ccs/utils/tiobj2bin/tiobj2bin" "SSL_REST_API_AWS_W19.out" "SSL_REST_API_AWS_W19.bin" "C:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/bin/armofd" "C:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/bin/armhex" "C:/ti/ccs930/ccs/utils/tiobj2bin/mkhex4bin"
 	-@echo ' '
 
 .PHONY: all clean dependents
