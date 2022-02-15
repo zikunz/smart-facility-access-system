@@ -1,7 +1,6 @@
 # Lab 1
 
 ## Application Overview
-
 1. When the program starts, it displays a message on the console window with a header and usage instructions.
 2. The program polls SW3 and SW2 on the CC3200 LaunchPad. When SW3 is pressed, a binary counting sequence on the LEDs starts. It will count from 000 to 111 continuously (after 111, it will restart from 000 unless SW2 is pressed). A message to the console "SW3 pressed" will also be shown. This message will not be printed again regardless of how many times the user keeps on pressing SW3 unless after SW2 is pressed.
 * 000 means green LED is OFF, orange LED is OFF, red LED is OFF
@@ -15,15 +14,12 @@
 3. When SW2 is pressed, the program will blink the LEDs ON and OFF in unison. Similarly, the program will print "SW2 pressed" to the console. This message will not be printed again regardless of how many times the user keeps on pressing SW2 unless after SW3 is pressed.
 4. The output signal P18 is set high whenever SW2 is pressed and low whenever SW3 is pressed. This can be verified using an oscilloscope.
 
-
-
 ## Screenshot of the Console Window
-![demo_1](https://user-images.githubusercontent.com/75139323/154020078-99edfd26-6051-4c25-a19c-dd20e1f71ba4.png)
-
-
+<p align="center">
+    <img src="https://user-images.githubusercontent.com/75139323/154020078-99edfd26-6051-4c25-a19c-dd20e1f71ba4.png">
+ </p>
 
 ## Implementations
-
 In `main()`, I include `InitTerm()` and `ClearTerm()` which are already implemented in `uart_if.c` that initializes and clears the terminal respectively. After that, I modify the user-defined `DisplayBanner()` in `uart_demo` to print our application name on the console. Lastly, I call `Message()` to print the usage instructions for the user.
 
 After that, I declare two local variables `isSwitchTwoPressed` and `isSwitchThreePressed` respectively and initialize both of them to 0 (1 means a particular switch is pressed). Then, it enters a forever loop consisting of an `if` and `else if` statements:
@@ -40,7 +36,6 @@ After that, I declare two local variables `isSwitchTwoPressed` and `isSwitchThre
   - Finally, I have another forever loop and I call a user-defined function `LEDLinkUnison()` lights up all the LEDs, delay for appropriate amount of time, turns off all the LEDs and again delay for appropriate amount of time. After any complete blink, I want to check if SW3 is pressed, this is done using `GPIOPinRead(GPIOA1_BASE, 0x20)`. If this happens, I want to break the forever loop.
 
 ## Known limitations
-
 As per the requirements, the polling approach is used to switch the LED mode from one to the other by pressing the other corresponding switch. You might notice that the switch is not entirely responsive as it is the limitation of polling. The user has to press SW3 and SW2 at the right time as they will only be checked after a part of the complete binary sequence (there are 8 parts from 000 to 111) and the LEDs blink once respectively. 
 
 To overcome this issue, we could probably rely on some built-in mechanisms. However, upon checking the datasheet, there does not seem to have an internal register which stores a value of 1 if a particular switch is pressed, and after checking if it is pressed, its stored value resets to 0. 
