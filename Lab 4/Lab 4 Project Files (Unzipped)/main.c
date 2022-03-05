@@ -376,27 +376,27 @@ void SendMsg()
 {
     int i = 0;
 
-    for (i = 0; i < currentMessageIndex; ++i)
+for (i = 0; i < currentMessageIndex; ++i)
+{
+    UartPairDevPutChar(charMessage[i]);
+    switch (colorMessage[i])
     {
-        UartPairDevPutChar(charMessage[i]);
-        switch (colorMessage[i])
-        {
-        case WHITE:
-            UartPairDevPutChar('1');
-            break;
-        case GREEN:
-            UartPairDevPutChar('2');
-            break;
-        case CYAN:
-            UartPairDevPutChar('3');
-            break;
-        case RED:
-            UartPairDevPutChar('4');
-            break;
-        case MAGENTA:
-            UartPairDevPutChar('5');
-            break;
-        }
+    case WHITE:
+        UartPairDevPutChar('1');
+        break;
+    case GREEN:
+        UartPairDevPutChar('2');
+        break;
+    case CYAN:
+        UartPairDevPutChar('3');
+        break;
+    case RED:
+        UartPairDevPutChar('4');
+        break;
+    case MAGENTA:
+        UartPairDevPutChar('5');
+        break;
+    }
 
     }
     UartPairDevPutChar('%');
@@ -487,15 +487,18 @@ void printChar(int result, int mode)
     }
     else if (result == 11 && mode == 0)           //delete
     {
-        if (letterMode == 1)
+        deleteChar();
+
+        // Uncomment below to use the LAST button to switch between letter and number mode
+        /*if (letterMode == 1)
         {
             letterMode = 0;
         }
         else
         {
             letterMode = 1;
-        }
-        //deleteChar();
+        }*/
+        
         return;
     }
     else if (result != 7 && result != 9 && letterMode == 1)
