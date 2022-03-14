@@ -1,6 +1,6 @@
 # Labs and Final Project
 
-EEC 172 Embedded Systems Labs 1 - 2 by [@zikunz](https://github.com/zikunz). 
+Labs 1 - 2 by [@zikunz](https://github.com/zikunz). 
 
 Labs 3 - 4 and Final Project by [@angl19](https://github.com/angl19) and [@zikunz](https://github.com/zikunz).
 
