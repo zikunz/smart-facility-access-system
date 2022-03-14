@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>EEC172 DB Query</title>
+    <!-- Add some CSS to change client UI -->
+    <style>
+    .content-table {
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 0.9em;
+        min-width: 400px;
+        border-radius: 5px 5px 0 0;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .content-table thead tr {
+        background-color: #009879;
+        color: #ffffff;
+        text-align: left;
+        font-weight: bold;
+    }
+
+    .content-table th,
+    .content-table td {
+        padding: 12px 15px;
+    }
+
+    .content-table tbody tr {
+        border-bottom: 1px solid #dddddd;
+    }
+
+    .content-table tbody tr:nth-of-type(even) {
+        background-color: #f3f3f3;
+    }
+
+    .content-table tbody tr:last-of-type {
+        border-bottom: 2px solid #009879;
+    }
+
+    .content-table tbody tr.active-row {
+        font-weight: bold;
+        color: #009879;
+    }
+
+    * {
+        font-family: sans-serif; /* Change your font family */
+    }
+    </style>
+    
+</head>
+<body onload="init()">
+    <header>
+        <h2>EEC 172 Final Project</h2>
+        <h3>Sample Webpage Query From Database</h3>
+    </header>
+    <table class="content-table", id = "table1">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>UID</th>
+            <th>Card Type</th>
+            <th>Username</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+
+        <script>
+
+            function init() // This is the function the browser first runs when it's loaded.
+                {
+                    callAPI(); // Then runs the refresh function for the first time.
+                    var int = self.setInterval(function () {
+                        callAPI()
+                    }, 1000); // Set the refresh() function to run every 10 seconds. [1 second would be 1000, and 1/10th of a second would be 100 etc.
+                }   
+
+            // define the callAPI function that takes a first name and last name as parameters
+            var callAPI = (firstName,lastName)=>{
+                // instantiate a headers object
+                var myHeaders = new Headers();
+                // add content type header to object
+                myHeaders.append("Content-Type", "application/json");
+                // using built in JSON utility package turn object to string and store in a variable
+                var raw = JSON.stringify();
+                // create a JSON object with parameters for API call and store in a variable
+                var requestOptions = {
+                    method: 'POST',
+                    headers: myHeaders,
+                    body: raw,
+                    redirect: 'follow'
+                };
+                // make API call with parameters and use promises to get response
+                fetch("https://gnkvyqb7rh.execute-api.us-west-2.amazonaws.com/dev", requestOptions)
+                .then(response => response.text())
+                .then(
+                    function(result) {
+
+                        var table = document.getElementById('table1');
+                        var rowCount = table.rows.length;
+                        for (var i = 1; i < rowCount; i++) {
+                            table.deleteRow(1);
+                        }
+                        var res = JSON.parse(result).body;
+  
+                        var arr = res.split("/");
+                        for(var i = 0; i < arr.length-1;i++)
+                        {
+                            var sarr = arr[i].split("?");
+                            if(sarr[1] != "None")
+                            {
+                                //var ri = table.rows.rowIndex;
+                                var lr = table.rows.length;
+                                var row = table.insertRow(lr);
+                                var cell1 = row.insertCell(0);
+                                var cell2 = row.insertCell(1);
+                                var cell3 = row.insertCell(2);
+                                var cell4 = row.insertCell(3);
+                                cell1.innerText = ' ' + sarr[0] + ' ';
+                                cell2.innerText = ' ' + sarr[1] + ' ';
+                                
+                                if (sarr[1] == "0000")
+                                {
+                                    cell3.innerText = " Password ";
+                                } 
+                                else if (sarr[1].length == 8)
+                                {
+                                    cell3.innerText = " Mifare Classic ";
+                                }
+                                else if(sarr[1].length == 14)
+                                {
+                                    cell3.innerText = " Mifare Ultralight ";
+                                }
+                                else
+                                {
+                                    cell3.innerText = " Unknown ";
+                                }
+                                cell4.innerText = ' ' + sarr[2] + ' ';
+                            }
+                        }
+                    }
+                )
+                .catch(error => console.log('error', error));
+            }
+        </script>
+</body>
+</html>
