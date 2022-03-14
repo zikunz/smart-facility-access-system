@@ -1,17 +1,5 @@
 # Lab 4: IR Remote Control Texting Over an Asynchronous Serial (UART) Link
 
-Make sure we have all of the following, to be delete later:
-
-- [x] Introduction on what the lab / final project is about
-
-- [x] Hardware and software tools used  
-
-- [ ] High-level descriptions of goals and how we realize the goals (implementations)  
-
-- [ ] Description of challenges and how we overcame them
-
-- [ ] What we have learned from the lab / final project
-
 ## Introduction
 
 In this lab, students will utilize the Saleae logic analyzer and an IR receiver module to characterize the transmissions when pressing some buttons on an AT&T IR remote control for a specific TV code. After decoding the respective waveforms generated after pressing 12 different buttons (i.e., `0`, `1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9`, `LAST` and `MUTE`), we are able to know which button on the remote control is pressed, before writing a program which uses interrupts to monitor the signal from the IR receiver module and use the remote control to compose messages using the [Multi-Tap Entry Systems](https://en.wikipedia.org/wiki/Multi-tap) to send text messages back and forth between two CC3200 LaunchPad boards over an asynchronous serial (UART) communication channel. 
@@ -26,6 +14,7 @@ We have also gone extra miles to enable the user to include numbers (i.e., 0 - 9
 4. Vishay TSOP31336 or 1236 or 31236
 5. 100Ω resistor
 6. 100uF capacitor
+7. Saleae logic analyzer
 
 ## Goals and Methods
 
@@ -50,31 +39,232 @@ We use the Saleae logic analyzer to observe how the waveforms look like, decode 
 The pictures of waveforms for all the buttons of interests are displayed below:
 
 <p align="center">
-    <img src="">
+    <img src="1.jpg">
  </p>
 
-<p align="center">Figure 2. Waveform of Button "0"</p>
+<p align="center">Figure 2. Waveform of Button "1"</p>
+<p align="center">
+    <img src="2.jpg">
+ </p>
 
+<p align="center">Figure 3. Waveform of Button "2"</p>
+<p align="center">
+    <img src="3.jpg">
+ </p>
 
+<p align="center">Figure 4. Waveform of Button "3"</p>
+<p align="center">
+    <img src="4.jpg">
+ </p>
 
+<p align="center">Figure 5. Waveform of Button "4"</p>
+<p align="center">
+    <img src="5.jpg">
+ </p>
 
+<p align="center">Figure 6. Waveform of Button "5"</p>
+<p align="center">
+    <img src="6.jpg">
+ </p>
 
+<p align="center">Figure 7. Waveform of Button "6"</p>
+<p align="center">
+    <img src="7.jpg">
+ </p>
 
+<p align="center">Figure 8. Waveform of Button "7"</p>
+<p align="center">
+    <img src="8.jpg">
+ </p>
 
+<p align="center">Figure 9. Waveform of Button "8"</p>
+<p align="center">
+    <img src="9.jpg">
+ </p>
 
+<p align="center">Figure 10. Waveform of Button "9"</p>
+
+<p align="center">
+    <img src="0.jpg">
+ </p>
+
+<p align="center">Figure 11. Waveform of Button "0"</p>
+
+<p align="center">
+    <img src="m.jpg">
+ </p>
+
+<p align="center">Figure 12. Waveform of Button "MUTE"</p>
+
+<p align="center">
+    <img src="l.jpg">
+ </p>
+
+<p align="center">Figure 13. Waveform of Button "LAST"</p>
 
 ### Part 4. Decoding IR Transmissions / Application Program
 
-How we interpret the waveforms is rather interesting. Specifically, 
+How we interpret the waveforms is rather interesting. Specifically, we found that the coding of the given AT&T remote control does not satisfy any existed coding standard, so we take the easiest and simpliest way to decode. We measure the interval between two rising edges and we get 3 different types. We coded those types in **ternary**, by its length of interval. For example:
 
-We also make use of the timer and ...
+<p align="center">
+    <img src="021.jpg">
+ </p>
 
-We observe that the first .. bit toggles ..
+<p align="center">Figure 14. Different intervals "0 2 1"</p>
 
-Therefore, our decoding logic is ...
+Here is the full list of the transcribed code of each button:
+
+```
+Code mapping
+1:              1000 0000 0001 
+2:              1000 0000 002
+3:              1000 0000 0010
+4:              1000 0000 020
+5:              1000 0000 021
+6:              1000 0000 011
+7:              1000 0000 0100
+8:              1000 0000 200
+9:              1000 0000 201
+0:              1000 0000 0000
+MUTE(ENTER):    1000 0000 111
+LAST(DELETE):   1000 0020 02
+```
+
+To make the process precisely and automatically, we also monitor the internal system tick counter of CC3200 and wrote a debug routine to get the accurate interval in ticks. When the rising edge is detected and triggered the interrupt on GPIO pin, the counter will report the interval:
 
 ```c
-// Code here if needed
+static void GPIOA0IntHandler(void)
+{ // PIN61 handler
+    unsigned long ulStatus;
+
+    ulStatus = MAP_GPIOIntStatus(pin61.port, true);
+    MAP_GPIOIntClear(pin61.port, ulStatus);        // clear interrupts on GPIOA1
+    pin61_intcount++;
+    pin61_intflag = 1;
+
+    if (g_ulTimerInts < 10)
+    {
+        gpioTimeCount = 0 + '0';
+
+    }
+    else {
+        gpioTimeCount = 1 + '0';
+    }
+    strncat(gpioArr, &gpioTimeCount, 1);
+
+    g_ulTimerInts = 0;
+}
+```
+
+Also, we observe that the first two bits will toggle when the key is released and another key is pressed. So one key could have two code to interpret.
+
+```
+Code mapping (toggled)
+1:              0100 0000 0001 
+2:              0100 0000 002
+3:              0100 0000 0010
+4:              0100 0000 020
+5:              0100 0000 021
+6:              0100 0000 011
+7:              0100 0000 0100
+8:              0100 0000 200
+9:              0100 0000 201
+0:              0100 0000 0000
+MUTE(ENTER):    0100 0000 111
+LAST(DELETE):   0100 0020 02
+```
+
+However, due to the given requirement, it is not necessary to concern the difference of the toggled code. So, we convert the input string generated by interrupt handler to number in decimal. Therefore, our decoding logic is below:
+
+```c
+int decodeDEC()
+{
+    int code_DEC = 0;
+    char * ptr;
+    ptr = strchr(gpioArr, NULL);
+    int s;
+    s = strlen(token);
+
+    code_DEC = strtol(ptr+1, NULL, 3);
+
+    switch (code_DEC)
+    {
+    case 177148:
+        Report("%d   %s      1 \r\n", strlen(gpioArr), gpioArr);
+        return 1;                 //177148 - 59050
+    case 177150:
+        Report("%d   %s      3 \r\n", strlen(gpioArr), gpioArr);
+        return 3;                //177150 - 59052
+    case 177156:
+        Report("%d   %s      7 \r\n", strlen(gpioArr), gpioArr);
+        return 7;                 //177156 - 59058
+    case 177147:
+        Report("%d   %s      0 \r\n", strlen(gpioArr), gpioArr);
+        return 0;                 //177147 - 59049
+    case 59050:
+        Report("%d   %s      1F \r\n", strlen(gpioArr), gpioArr);
+        return 1;                 //177148 - 59050
+    case 59052:
+        Report("%d   %s      3F \r\n", strlen(gpioArr), gpioArr);
+        return 3;               //177150 - 59052
+    case 59058:
+        Report("%d   %s      7F \r\n", strlen(gpioArr), gpioArr);
+        return 7;                 //177156 - 59058
+    case 59049:
+        Report("%d   %s      0F \r\n", strlen(gpioArr), gpioArr);
+        return 0;                 //177147 - 59049
+    case 59051:
+        Report("%d   %s      2 \r\n", strlen(gpioArr), gpioArr);
+        return 2;                  //59051 - 19685
+    case 59055:
+        Report("%d   %s      4 \r\n", strlen(gpioArr), gpioArr);
+        return 4;                //59055 - 19689
+    case 59056:
+        Report("%d   %s      5 \r\n", strlen(gpioArr), gpioArr);
+        return 5;                //59056 - 19690
+    case 59053:
+        Report("%d   %s      6 \r\n", strlen(gpioArr), gpioArr);
+        return 6;                //59053 - 19687
+    case 59067:
+        Report("%d   %s      8 \r\n", strlen(gpioArr), gpioArr);
+        return 8;                  //59067 - 19701
+    case 59068:
+        Report("%d   %s      9 \r\n", strlen(gpioArr), gpioArr);
+        return 9;                  //59068 - 19702
+    case 59062:
+        Report("%d   %s      ENTER \r\n", strlen(gpioArr), gpioArr);
+        return 10;              //59062 - 19696
+    case 19685:
+        Report("%d   %s      2F \r\n", strlen(gpioArr), gpioArr);
+        return 2;                  //59051 - 19685
+    case 19689:
+        Report("%d   %s      4F \r\n", strlen(gpioArr), gpioArr);
+        return 4;                //59055 - 19689
+    case 19690:
+        Report("%d   %s      5F \r\n", strlen(gpioArr), gpioArr);
+        return 5;                //59056 - 19690
+    case 19687:
+        Report("%d   %s      6F \r\n", strlen(gpioArr), gpioArr);
+        return 6;                //59053 - 19687
+    case 19701:
+        Report("%d   %s      8F \r\n", strlen(gpioArr), gpioArr);
+        return 8;                  //59067 - 19701
+    case 19702:
+        Report("%d   %s      9F \r\n", strlen(gpioArr), gpioArr);
+        return 9;                  //59068 - 19702
+    case 19696:
+        Report("%d   %s      ENTER F \r\n", strlen(gpioArr), gpioArr);
+        return 10;              //59062 - 19696
+    case 19739:
+        Report("%d   %s      DELETE \r\n", strlen(gpioArr), gpioArr);
+        return 11;             //19739 - 6617
+    case 6617:
+        Report("%d   %s      DELETE F \r\n", strlen(gpioArr), gpioArr);
+        return 11;             //19739 - 6617
+    }
+
+
+}
 ```
 
 We have also made sure that only these 12 buttons with device code 1416 are recognized (i.e., other signals are effectively ignored). This is done by ...
@@ -301,9 +491,9 @@ We also enable the user to type both letters and numbers using the remote contro
 
 During our development procedure, we have met many difficulties in function implementation and testing.
 
-1. In some unusual cases, we observed that a previously composed character will appear again. For instance, suppose we want to type "EC", we should press 3 and be able to press 2 immediately. However, the OLED sometimes shows "EEC" as a result. We resolved this issue by ...
-2. Not too responsive and can be hard to use. We improved responsiveness by ...
-3. ...
+1. In our earlier testing process, we observed that a previously composed character will appear again. For instance, suppose we want to type "EC", we should press 3 and be able to press 2 immediately. However, the OLED sometimes shows "EEC" as a result. We resolved this issue by limit the receive buffer string exactly to the length of longest instruction (12 in our case) to avoid receiving partial of the next message. 
+2. However, the limitation in length of receiving buffer makes the device sometimes not too responsive since some income message packages can be discarded. We improved responsiveness by minimizing the processing time in the GPIO interrupt handler to make sure every package can be catched.
+3. The decoding system is low efficiency and not considering the bit toggle property due to the time constrint. The whole system is usable, but the algorithm can be significantly improved in future revisions.
 
 ## Conclusion
 

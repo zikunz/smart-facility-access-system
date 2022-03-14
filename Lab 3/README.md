@@ -1,5 +1,7 @@
 # Lab 3: Serial Interfacing Using Serial Peripheral Interface (SPI) and I²C
 
+## Team members: Ang Li, Zikun Zhu
+
 ## Introduction
 
 The objective of this lab is to learn how to use SPI to interface a CC3200 LaunchPad to a color OLED display and use I²C to communicate with an onboard Bosch BMA222 acceleration sensor. 
@@ -384,17 +386,17 @@ Note that the sizes of the red apple and yellow apple are 2 pixels and 3 pixels 
 
 ### Video Demo
 
-Please refer to `Lab 3 SPI Demo` [here](https://youtu.be/vKJY5e-6vfY) and `Lab 3 I2C Demo` [here](https://youtu.be/vveH6eGk6_8).
+Please refer to `Lab 3 SPI.mov` or [here](https://youtu.be/vKJY5e-6vfY) and `Lab 3 I2C.mov` (or [here](https://youtu.be/vveH6eGk6_8)).
 
 ## Challenges
 
-During our development procedure, we have met some difficulties in function implementation and testing.
+During our development procedure, we have met some difficulties in function implement and testing.
 
-1. The SPI request and response functions should be precisely ordered in the main program to avoid possible malfunctions due to the conflict.
-2. Saleae analyzer has a picky environment requirement. In our case, the CC3200 board and the analyzer cannot be connected and powered by the same computer. If this happens, the Logic software will show errors of connection.
-3. The refreshing rate of the LCD is too low that the previous frame will remain on the screen. To solve this, one possible solution is to increase the SPI and I²C communication rate.
+1. The SPI request and respond functions should be precisely ordered in the main program to avoid possible malfunctions due to the conflict.
+2. Saleae analyzer has picky environment requirement. In our case, the CC3200 board and the analyzer cannot connected and powered by the same computer. If do so, the Logic software will get errors of connection.
+3. The refreshing rate of the LCD is too low that the previous frame will keep remained on the screen. To solve this, one possible solution is to increase the SPI and I²C communication rate.
 4. The ball movement in the last section is not natural. In future improvement the acceleration factor could be involved to simulate the real physical environment with inertia.
 
 ## Conclusion
 
-In this lab, we successfully finished all tasks listed in the lab manual and verified our design with our TA. We have learnt the basics of SPI and I²C and tried to write the functions in C to implement the communication between two MCUs and then with the OLED screen. Besides that, we also learned how to use modern analyzing tools to detect and test the communicating signals. In the last part of the lab, we designed our own game with the given prompt. With our modification and innovation the game is playable and well-practiced with our skill in SPI/I²C programming with MCU.
+In this lab, we successfully finished all tasks listed in the lab manual and verified our design with our TA. We have learnt the basic of SPI and I²C and tried to write the functions in C++ to implement the communication between two MCUs and then with the OLED screen. Besides that, we also learned how to use modern analyzing tool to detect and test the communcating signals. In the last part of the lab, we designed our own game with the given prompt. With our modification and innovation the game is playable and well-practiced our skill in SPI/I²C programming with MCU.
